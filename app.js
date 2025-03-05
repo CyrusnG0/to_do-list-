@@ -1,10 +1,16 @@
 const express = require('express');
 const authRoute = require('./route/authRoute')
 const mongoose = require('mongoose');
+const cookierParser = require('cookie-parser')
+const {checkUser} = require('./middleware/authMiddleware')
+
+
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(express.static('public'));
+app.use(cookierParser()); 
+
 //database connection
 const dbURI = 'mongodb+srv://zeta:zeta1234@nodetuts.rigzm.mongodb.net/todo_list?retryWrites=true&w=majority&appName=nodetuts';
 mongoose.connect(dbURI)
@@ -21,3 +27,15 @@ mongoose.connect(dbURI)
 
 
 app.use(authRoute);
+
+app.use('/home', (req,res)=>{
+    res.render('home');
+})
+
+app.use('/main',checkUser ,(req,res)=>{
+    res.render('main');
+})
+
+app.use((req,res)=>{
+    res.status(404).render('404');
+})

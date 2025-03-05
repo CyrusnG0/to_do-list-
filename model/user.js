@@ -25,8 +25,25 @@ const userschema = new mongoose.Schema({
 
 })
 
+userschema.statics.login = async function(username, password){
+    const user = await this.findOne({username});
+    if(user){
+        const auth = await bcrypt.compare(password, user.password);
+        if(auth){
+            return user;
+        }else{
+            throw Error('validation failed');
+        }
+        
+    }else{
+        throw Error('validation failed');
+    }
+    
+}
+
 userschema.pre("save",async function(next){
-    console.log('user about to be created:', this);
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt)
 })
 
 userschema.post('save',async function(doc){
