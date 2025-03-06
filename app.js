@@ -1,8 +1,8 @@
 const express = require('express');
 const authRoute = require('./route/authRoute')
+const mainRoute = require('./route/mainRoute')
 const mongoose = require('mongoose');
 const cookierParser = require('cookie-parser')
-const {checkUser} = require('./middleware/authMiddleware')
 
 
 const app = express();
@@ -27,14 +27,13 @@ mongoose.connect(dbURI)
 
 
 app.use(authRoute);
+app.use(mainRoute);
 
 app.use('/home', (req,res)=>{
     res.render('home');
 })
 
-app.use('/main',checkUser ,(req,res)=>{
-    res.render('main');
-})
+
 
 app.use((req,res)=>{
     res.status(404).render('404');

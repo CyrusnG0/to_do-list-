@@ -11,8 +11,13 @@ const checkUser = async (req,res,next)=>{
             }
             else{
                 let user = await User.findById(decodedToken.id)
-                res.locals.user = user
-                next()
+                if(user){
+                    req.userInfo= {user}
+                    next()
+                }else{
+                    res.cookie('jwt', '', {maxAge:1})
+                    res.redirect('/login')
+                }
             }
         })
     }

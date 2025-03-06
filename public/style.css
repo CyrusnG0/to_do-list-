@@ -69,3 +69,15 @@ header h1 {
     margin: 0;
     font-size: 2.5em;
 }
+
+.prompt {
+    text-align: center;
+    margin-top: 20px;
+    position: relative;
+    font-size: 10px;
+}
+
+.prompt a {
+    color: green;
+    text-decoration: none;
+}

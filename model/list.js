@@ -1,28 +1,49 @@
 const mongoose = require('mongoose');
+const { all } = require('../route/authRoute');
+
+const contentSchema = new mongoose.Schema({
+    title:{
+        type:String,
+        required:true,
+    },
+    content:[String]
+})
 
 const listschema = new mongoose.Schema({
-    username:{
-        type: String,
-        required:[true, 'pls enter a username'],
-        unique:true,
-        Lowercase:true,
-        minlength:[6, 'username must be at least 6 characters'],
-        validate:{
-            validator: function(v){
-                const regrex = /(?=.*[A-Z])/;
-                return regrex.test(v);
-            },
-            message:"username must contain at least one uppercase letter"
-        }
-    },
-    password:{
-        type: String,
+    userId:{
+        type:String,
         required:true,
-        minlength:[6, 'password must be at least 6 characters']
     },
+    all_list:[contentSchema]
 
 })
 
+listschema.post('save',async function(doc){
+    console.log('new list created:', doc);
+})
+//define two fucntions, one for adding the main type from contentSchema to the all_list of list schema and the other for adding the sub type in contentSchema
+listschema.statics.addnewType = async function(userId, title){
+    const newType = {title:title, content:[]}
+    const isExist = await this.find({userId:userId, all_list:{$elemMatch:{title:title}}})
+    if(isExist.length==0){
+        const result = await this.findOneAndUpdate({userId:userId}, {$push:{all_list:newType}});
+        return result
+    }else{
+        throw Error(title + ' type already exist')
+    }
+    
+}
 
-const user = mongoose.model('list',listschema);
-module.exports = user;
+listschema.statics.addnewSubType = async function(userId, title, content){
+    // const target ={userId:userId, "all_list.title":title}
+    // const isExist = await this.find("all_list.title"=title)
+    // if(isExist){
+    //     const result = await this.findOneAndUpdate(target, {$push:{'all_list.$.content':content}});
+    //     return result
+    // }throw Error('no such type exist')
+}
+
+
+const list = mongoose.model('list',listschema);
+module.exports = list;
+
