@@ -35,12 +35,12 @@ listschema.statics.addnewType = async function(userId, title){
 }
 
 listschema.statics.addnewSubType = async function(userId, title, content){
-    // const target ={userId:userId, "all_list.title":title}
-    // const isExist = await this.find("all_list.title"=title)
-    // if(isExist){
-    //     const result = await this.findOneAndUpdate(target, {$push:{'all_list.$.content':content}});
-    //     return result
-    // }throw Error('no such type exist')
+    const target ={userId:userId, "all_list.title":title}
+    const isExist = await this.find({userId:userId, all_list:{$elemMatch:{title:title}}})
+    if(isExist.length!=0){
+        const result = await this.findOneAndUpdate(target, {$push:{'all_list.$.content':content}});
+        return result
+    }throw Error('no such type exist')
 }
 
 
