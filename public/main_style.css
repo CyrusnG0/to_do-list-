@@ -4,4 +4,41 @@
 
     border: 2px solid #ccc;
     border-radius: 4px;
+    display:flex;
+    flex-direction: column;
+    
+    
+}
+
+
+.delete {
+    text-align: center;
+    font-size:15px ;
+    margin-top:20px;
+    margin-left:60%;
+    color: red;
+    text-decoration: none;
+    text-decoration: none;
+    background:none;
+    border:none;
+    cursor: pointer;
+    display: flex;
+    
+
+
+}
+
+.data{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    
+    
+}
+
+.list {
+    display: flex;
+    text-align: center;
+    align-content: center;
+
 }

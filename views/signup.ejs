@@ -40,7 +40,7 @@
                 password_error.textContent = data.errors.password;
                 email_error.textContent = data.errors.username;
             }
-            if(data.user){
+            else if(data.user){
                 location.assign('/main')
             }
         }catch{

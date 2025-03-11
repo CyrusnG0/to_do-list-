@@ -5,6 +5,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 
 const getError = (err)=>{
+    if(err==null)return
     let errors={username:'', password:''}
 
     if(err.code==11000){
@@ -26,13 +27,11 @@ const genToken = (id)=>{
 module.exports.signup_post = async (req,res)=>{
     const {username,password} = req.body
    try{
-    const user =  await User.create({username,password})
-    const list = new List({userId:user._id, all_list:[{title:'kill_list', content:["alien"]}]} )
-    await list.save()
-    console.log(list)
-    const token = genToken(user._id)
-    res.cookie('jwt', token, {httpOnly:true, maxAge:3*24*60*60*1000})
-    res.status(200).json({user:user._id})
+        const user =  await User.create({username,password})
+        const list = await List.create({userId:user._id, all_list:[]} ).catch(err=>console.log(err))
+        const token = genToken(user._id)
+        res.cookie('jwt', token, {httpOnly:true, maxAge:3*24*60*60*1000})
+        res.status(200).json({user:user._id})
 
    }catch(err){
          const errors = getError(err)
