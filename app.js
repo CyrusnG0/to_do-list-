@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const authRoute = require('./route/authRoute')
 const mainRoute = require('./route/mainRoute')
@@ -12,7 +13,7 @@ app.use(express.static('public'));
 app.use(cookierParser()); 
 
 //database connection
-const dbURI = 'mongodb+srv://zeta:zeta1234@nodetuts.rigzm.mongodb.net/todo_list?retryWrites=true&w=majority&appName=nodetuts';
+const dbURI = process.env.DB_URI;
 mongoose.connect(dbURI)
 .then((result)=>{
     app.listen(3000, () => {
