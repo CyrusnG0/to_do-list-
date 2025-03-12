@@ -7,19 +7,19 @@
     <link rel="stylesheet" href="/main_style.css">
 </head>
 <body>
-    <div class="logout"><a href="/main/logout">Log Out</a></div>
+    <div class="logout"><h5>Welcome back, <%= user.username %></h5><a href="/main/logout">Log Out</a></div>
     <div class="container">
         <h1>To-Do List</h1>
         <h2 id="main_title"><%- title %></h2>
         <form class="subtype">
-            <input type="text" name="task" placeholder="Enter a new task for subtype" required>
+            <input type="text" name="task" placeholder="Enter a new task" required>
             <button type="submit">Add</button>
         </form>
     </div>
 
     <div class="container">
         <form class="maintype">
-            <input type="text" name="task" placeholder="Enter a new main type" required>
+            <input type="text" name="task" placeholder="Enter a new type" required>
             <button type="submit">Add</button>
         </form>
     </div>
@@ -30,7 +30,11 @@
             <ul  id="main-types-list">
                 <!-- Main types will be dynamically inserted here -->
                  <% main_types.forEach((key)=>{ %>
-                    <div class ="list"><li class="data main"><a href="/main/<%= key %>"><%= key %></a></li><button class="delete main" data-type="main" data-key=<%= key %>>Delete</button></div>
+                    <div class ="list">
+                        <li class="data main"><a href="/main/<%= key %>"><%= key %></a></li>
+                        <button class="delete main" data-type="main" data-key=<%= key %>>Delete</button>
+                        <button class="modi main" data-type="main" data-key=<%= key %>>modify</button>
+                    </div>
                 <% }) %>
             </ul>
         </div>
@@ -42,7 +46,11 @@
             <ul id="sub-types-list">
                 <!-- Sub types will be dynamically inserted here -->
                  <% sub_types.forEach((key)=>{ %>
-                    <div class ="list"><li class="data sub"><%= key %></li><button class="delete sub" data-type="sub" data-key=<%= key %>>Delete</button></div>
+                    <div class ="list">
+                        <li class="data sub"><%= key %></li>
+                        <button class="delete sub" data-type="sub" data-key=<%= key %>>Delete</button>
+                        <button class="modi sub" data-type="sub" data-key=<%= key %>>modify</button>
+                    </div>
                 <% }) %>
             </ul>
         </div>
@@ -52,28 +60,83 @@
         const sub_form = document.querySelector('form.subtype');
         const main_form = document.querySelector('form.maintype');
         const delete_btn = document.querySelectorAll('.delete');
+        const mod_btn = document.querySelectorAll('.modi');
         const tittle = document.getElementById('main_title');
 
         const sub_input = sub_form.querySelector('form.subtype [name="task"]');
         const main_input = main_form.querySelector('form.maintype [name="task"]');
 
         delete_btn.forEach((btn)=>{
-            btn.addEventListener('click', (e)=>{
+            if(btn.getAttribute('data-type')=="main" && (tittle.textContent != btn.parentElement.querySelector('li').textContent || tittle == null)){
+                btn.style.display = 'none'
+            }else{
+                btn.style.display = 'block'
+            }
+
+            btn.addEventListener('click', async (e)=>{
+                const endpoint = `/main/${tittle.textContent}`
                 const confirm = window.confirm("Are you sure you want to delete this item?");
                 if(confirm){
                     const type = e.target.getAttribute('data-type');
                     const key = e.target.getAttribute('data-key');
+                    const title = tittle.textContent
                     const endpoint = `/main/${tittle.textContent}`
                     try{
-                        const res = fetch(endpoint,{
+                        const res = await fetch(endpoint,{
                             method:'DELETE',
-                            body: JSON.stringify({type, key}),
+                            body: JSON.stringify({type, key, title}),
                             headers:{'Content-Type':'application/json'}
                         })
+
+                        btn.parentElement.remove()
+                        const data = await res.json()
+                        console.log(data)
+                        if(data.err){
+                            alert("internal error, pls try again later")
+                        }else if(data.redirect){
+                            console.log(data.redirect)
+                            location.assign(data.redirect)
+                        }
+
                     }catch(err){
                         console.log(err)
                     }
-                    btn.parentElement.remove()
+                }
+
+            })
+        })
+
+        mod_btn.forEach((btn)=>{
+            if(btn.getAttribute('data-type')=="main" && (tittle.textContent != btn.parentElement.querySelector('li').textContent || tittle == null)){
+                btn.style.display = 'none'
+            }else{
+                btn.style.display = 'block'
+            }
+            btn.addEventListener('click', async (e)=>{
+
+                const type = e.target.getAttribute('data-type');
+                const key = btn.parentElement.querySelector('li').textContent;
+                const title = tittle.textContent
+                const endpoint = `/main/${tittle.textContent}/modify`
+                const new_key = prompt("Enter new key")
+                if(new_key){
+                    try{
+                    const res = await fetch(endpoint,{
+                        method:'post',
+                        body: JSON.stringify({type, key, title, new_key}),
+                        headers:{'Content-Type':'application/json'}
+                    })
+                    btn.parentElement.querySelector('li').textContent = new_key
+                    const data = await res.json()
+                    if(data.err){
+                        alert("internal error, pls try again later")
+                    }else if(data.redirect){
+                        location.assign(data.redirect)
+                    }
+
+                }catch(err){
+                    console.log(err)
+                }
                 }
 
             })
@@ -107,12 +170,17 @@
             }
             else if(data.input){
                 const main_types_list = document.getElementById('sub-types-list');
-                const li = document.createElement('li');
+                const li = document.createElement('div');
                 const key = data.input;
-                li.innerHTML = `<li class="data sub">${key}</li> <button class="delete sub" data-id=${key}>Delete</button>`;
+                li.innerHTML = `<div class ="list">
+                        <li class="data sub">${key}</li>
+                        <button class="delete sub" data-type="sub" data-key=${key}>Delete</button>
+                        <button class="modi sub" data-type="sub" data-key=${key}>modify</button>
+                    </div>`;
                 main_types_list.appendChild(li);
 
-                main_input.value = '';
+                sub_input.value = '';
+                window.location.reload(true)
             }
                 
             }catch(err){
@@ -140,12 +208,17 @@
             }
             else if(data.input){
                 const main_types_list = document.getElementById('main-types-list');
-                const li = document.createElement('li');
+                const li = document.createElement('div');
                 const key = data.input;
-                li.innerHTML = `<li class="data main"><a  href="/main/${key}">${key}</a></li><button class="delete main" data-id=${key}>Delete</button>`;
+                li.innerHTML = `<div class ="list">
+                        <li class="data main"><a href="/main/${key}">${key}</a></li>
+                        <button class="delete main" data-type="main" data-key=${key}>Delete</button>
+                        <button class="modi main" data-type="main" data-key=${key}>modify</button>
+                    </div>`;
                 main_types_list.appendChild(li);
 
                 main_input.value = '';
+                window.location.reload(true)
             }
             
                 

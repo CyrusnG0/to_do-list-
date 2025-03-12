@@ -1,3 +1,88 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.logout {
+    text-align: right;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+
+
+
+}
+
+.logout a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0px;
+    margin-right:10px;
+
+}
+
+.logout h5 {
+    color: white;
+    text-align: left;
+    font-size:20px;
+    margin: 0px;
+
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
 
 
 .container-scroll {
@@ -10,6 +95,107 @@
     
 }
 
+.scroll-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.scroll-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.scroll-list li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scroll-list li:last-child {
+    border-bottom: none;
+}
+
+.scroll-list li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.scroll-list li a:hover {
+    text-decoration: underline;
+}
+
+.scroll-list .delete, .scroll-list .modi {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.scroll-list .delete:hover, .scroll-list .modi:hover {
+    background-color: #c82333;
+}
+
+.scroll-list .modi {
+    background-color: #ffc107;
+    color: black;
+}
+
+.scroll-list .modi:hover {
+    background-color: #e0a800;
+}
+
+.scroll-list .list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.scroll-list .data {
+    flex: 1;
+}
+
+.scroll-list .modi, .scroll-list .delete {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.scroll-list .modi:hover {
+    background-color: #0056b3;
+}
+
+.scroll-list .delete {
+    background-color: #dc3545;
+}
+
+.scroll-list .delete:hover {
+    background-color: #c82333;
+}
+
+.modi {
+    margin-top:19px;
+    color: green;
+    text-decoration: none;
+    text-decoration: none;
+    background:none;
+    border:none;
+    cursor: pointer;
+}
 
 .delete {
     text-align: center;
@@ -28,13 +214,17 @@
 
 }
 
+
+
 .data{
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    display:block;
     
     
 }
+
 
 .list {
     display: flex;

@@ -76,11 +76,36 @@ module.exports.main_id_get = async (req,res)=>{
 
 module.exports.main_id_delete = async (req,res)=>{//rmb to tackle where after delete the user can't add any sub type in this empty and tell the user to create a new main type first
     const id = req.params.id
-    const {type, data} = req.body
-    console.log(req.body)
+    const {type, key,title} = req.body
     const token = req.cookies.jwt
     const current_id = req.userInfo.user._id.toString()
     if(type=="sub"){
-        List.deleteSubType(current_id, id, data).catch(err=>console.log(err))
+        List.deleteSubType(current_id, id, key).catch(err=>console.log(err))
+        res.status(200).json('deleted')
     }
+    else if(type=="main"){
+        List.deleteMainType(current_id, title).catch(err=>console.log(err))
+        res.status(200).json({redirect:'/main'})
+
+
+    }
+}
+
+module.exports.main_id_modify_post = async (req,res)=>{
+    const id = req.params.id
+    const {type,key,title, new_key} = req.body
+    const token = req.cookies.jwt
+    const current_id = req.userInfo.user._id.toString()
+    if(type=="sub"){
+        List.modSubType(current_id, id, key, new_key).catch(err=>console.log(err))
+        res.status(200).json('modified')
+    }
+    else if(type=="main"){
+        List.modMainType(current_id, title, new_key).catch(err=>console.log(err))
+        const endpoint = '/main/'+new_key
+        res.status(200).json({redirect:endpoint})
+
+
+    }
+
 }
